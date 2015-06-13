@@ -1,5 +1,5 @@
 /*
- *   Copyright 2012-2014 Andrea Scarpino <scarpino@kde.org>
+ *   Copyright 2012-2015 Andrea Scarpino <scarpino@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as
@@ -17,16 +17,22 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 1.1
-import org.kde.plasma.core 0.1 as PlasmaCore
-import org.kde.plasma.components 0.1 as PlasmaComponents
-import org.kde.qtextracomponents 0.1 as QtExtraComponents
+import QtQuick 2.0
+import QtQuick.Layouts 1.1
+import org.kde.plasma.plasmoid 2.0
+import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.components 2.0 as PlasmaComponents
 
 Item {
     id: main
 
+    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
+
     property int minimumWidth: row.implicitWidth
     property int minimumHeight: text.paintedHeight
+
+    Layout.minimumHeight: minimumHeight
+    Layout.minimumWidth: minimumWidth
 
     property bool show_application_icon: false
     property bool show_window_title: false
@@ -34,6 +40,7 @@ Item {
     property bool use_fixed_width: false
     property bool use_maximum_width: false
 
+    /*
     Component.onCompleted: {
         plasmoid.addEventListener("ConfigChanged", configChanged)
     }
@@ -56,6 +63,7 @@ Item {
             text.font.weight = Font.Normal
         }
     }
+    */
 
     PlasmaCore.DataSource {
         id: tasksSource
@@ -70,29 +78,31 @@ Item {
             connectedSources = sources
         }
 
-        onDataChanged: {
+        onModelChanged: {
             // Reset texts
             text.text = ""
-            iconItem.icon = ""
+            iconItem.source = ""
             tooltip.mainText = ""
             tooltip.subText = ""
             tooltip.image = ""
 
+            /*
             if (show_activity_name !== 2) {
                 var activityId = activitySource.data["Status"]["Current"]
 
                 text.text = activitySource.data[activityId]["Name"]
-                iconItem.icon = activitySource.data[activityId]["Icon"]
+                iconItem.source = activitySource.data[activityId]["Icon"]
 
                 tooltip.mainText = text.text
                 tooltip.subText = ""
-                tooltip.image = iconItem.icon
-            }
+                tooltip.image = iconItem.source
+            }*/
 
-            if (show_activity_name !== 0) {
-                for ( var i in data ) {
-                    if (data[i].active) {
-                        iconItem.icon = data[i].icon
+            //if (show_activity_name !== 0) {
+                for ( var i in models.keys ) {
+                    console.log(i)
+                    /*if (data[i].active) {
+                        iconItem.source = data[i].icon
 
                         if (show_window_title) {
                             text.text = data[i].name
@@ -102,13 +112,14 @@ Item {
 
                         tooltip.mainText = data[i].classClass
                         tooltip.subText = data[i].name
-                        tooltip.image = iconItem.icon
+                        tooltip.image = iconItem.source
 
                         break
-                     }
+                     }*/
                 }
-            }
+            //}
 
+            /*
             if (use_fixed_width) {
                 main.width = plasmoid.readConfig("fixedWidthPx")
                 if (show_application_icon) {
@@ -126,8 +137,8 @@ Item {
 
                 text.elide = Text.ElideNone
 
-                var maximumWidth = plasmoid.readConfig("maximumWidthPx")
                 if (use_maximum_width) {
+                    var maximumWidth = plasmoid.readConfig("maximumWidthPx")
                     if (main.width > maximumWidth) {
                         text.width = maximumWidth - row.spacing - iconItem.width
                         text.elide = Text.ElideRight
@@ -135,7 +146,7 @@ Item {
                 }
 
                 text.width = text.paintedWidth
-            }
+            }*/
         }
     }
 
@@ -153,9 +164,9 @@ Item {
         }
     }
 
-    PlasmaCore.ToolTip {
+    PlasmaCore.ToolTipArea {
         id: tooltip
-        target: main
+//        target: main
     }
 
     Row {
@@ -163,7 +174,7 @@ Item {
         spacing: 3
         anchors.centerIn: parent
 
-        QtExtraComponents.QIconItem {
+        PlasmaCore.IconItem {
             id: iconItem
             height: text.paintedHeight
             width: height
