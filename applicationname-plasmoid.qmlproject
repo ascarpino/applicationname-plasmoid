@@ -16,5 +16,4 @@ Project {
         directory: "."
     }
 
-    importPaths: [ "/usr/lib/kde4/imports/" ]
 }
