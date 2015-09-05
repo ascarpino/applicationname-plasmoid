@@ -18,15 +18,21 @@
  */
 
 import QtQuick 2.0
+import QtQuick.Controls 1.0
+import QtQuick.Layouts 1.0
 
-import org.kde.plasma.configuration 2.0
+import org.kde.plasma.core 2.0 as PlasmaCore
 
-ConfigModel {
+Item {
+    width: childrenRect.width
+    height: childrenRect.height
 
-    ConfigCategory {
-        name: i18n("General")
-        icon: "plasma"
-        source: "ConfigGeneral.qml"
-    }
+    property bool cfg_showApplicationIcon: false
+    property bool cfg_showWindowTitle: false
+    property int cfg_showActivityName: 1
+    property bool cfg_useFixedWidth: false
+    property bool cfg_useMaximumWidth: false
+    property int cfg_fixedWidthPx: 1
+    property int cfg_maximumWidth: 1
 
 }
